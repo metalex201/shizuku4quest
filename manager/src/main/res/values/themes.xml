@@ -15,7 +15,7 @@
 
     <style name="Theme.Light" parent="Base.AppTheme.Light" />
 
-    <style name="Base.AppTheme" parent="Theme.Material3.Dark.Shizuku">
+    <style name="Base.AppTheme" parent="ThemeOverlay.Black">
         <item name="appColorPrimary">@color/app_color_dark</item>
         <item name="homeCardStyle">@style/Card</item>
 

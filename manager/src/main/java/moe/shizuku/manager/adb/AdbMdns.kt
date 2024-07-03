@@ -15,7 +15,7 @@ import java.net.ServerSocket
 @RequiresApi(Build.VERSION_CODES.R)
 class AdbMdns(
     context: Context, private val serviceType: String,
-    private val port: MutableLiveData<Int>
+    val port: MutableLiveData<Int>
 ) {
 
     private var registered = false

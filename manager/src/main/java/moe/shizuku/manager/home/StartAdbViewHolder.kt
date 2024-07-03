@@ -68,3 +68,6 @@ class StartAdbViewHolder(binding: HomeStartAdbBinding, root: View) : BaseViewHol
             .toHtml(HtmlCompat.FROM_HTML_OPTION_TRIM_WHITESPACE)
     }
 }
+
+
+

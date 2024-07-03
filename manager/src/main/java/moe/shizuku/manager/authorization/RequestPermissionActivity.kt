@@ -1,12 +1,38 @@
 package moe.shizuku.manager.authorization
 
-import android.app.Dialog
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import moe.shizuku.manager.Helps
 import moe.shizuku.manager.R
@@ -26,7 +52,6 @@ import java.util.concurrent.TimeoutException
 
 class RequestPermissionActivity : AppActivity() {
 
-    private lateinit var dialog: Dialog
 
     private fun setResult(requestUid: Int, requestPid: Int, requestCode: Int, allowed: Boolean, onetime: Boolean) {
         val data = Bundle()
@@ -54,7 +79,6 @@ class RequestPermissionActivity : AppActivity() {
                 .setOnDismissListener { finish() }
                 .create()
         dialog.setOnShowListener {
-            (it as AlertDialog).findViewById<TextView>(android.R.id.message)?.movementMethod = LinkMovementMethod.getInstance()
         }
         try {
             dialog.show()
@@ -86,7 +110,6 @@ class RequestPermissionActivity : AppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (!waitForBinder()) {
             finish()
             return
@@ -111,7 +134,76 @@ class RequestPermissionActivity : AppActivity() {
             ai.packageName
         }
 
-        val binding = ConfirmationDialogBinding.inflate(layoutInflater).apply {
+        setContent {
+
+
+            val context = LocalContext.current
+            val packageManager = context.packageManager
+            val applicationInfo = context.applicationInfo
+
+            val icon: Drawable = packageManager.getApplicationIcon(ai)
+            val bitmap = icon.toBitmap() // Convert Drawable to Bitmap
+            val imageBitmap = remember { bitmap.asImageBitmap() } // Remember the Bitmap
+
+            Box(modifier = Modifier
+                .fillMaxSize()
+            ) {
+                Card(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .clip(RoundedCornerShape(30.dp)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.Black, //Card background color
+                        contentColor = Color.Black  //Card content color,e.g.text
+                    )
+                ) {
+                    Column {
+                        Row {
+                            Image(
+                                bitmap = imageBitmap,
+                                contentDescription = "Package Icon",
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .padding(10.dp)
+                            )
+                            Text(text = "allow $label to use shizuku4quest?",
+                                color = Color.White,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterVertically)
+                                    .padding(8.dp))
+
+                        }
+                        Button(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 10.dp)
+                            .padding(horizontal = 10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                            onClick = { setResult(uid, pid, requestCode, allowed = true, onetime = false)
+                                finishAndRemoveTask()}
+                        ) {
+                            Text(text = "Allow all the time", color = Color.Black)
+                        }
+
+                        Button(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 10.dp)
+                            .padding(horizontal = 10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                            onClick = { setResult(uid, pid, requestCode, allowed = false, onetime = true)
+                                finishAndRemoveTask()}
+                        ) {
+                            Text(text = "Deny", color = Color.Black)
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /*val binding = ConfirmationDialogBinding.inflate(layoutInflater).apply {
             button1.setOnClickListener {
                 setResult(uid, pid, requestCode, allowed = true, onetime = false)
                 dialog.dismiss()
@@ -130,6 +222,6 @@ class RequestPermissionActivity : AppActivity() {
                 .setOnDismissListener { finish() }
                 .create()
         dialog.setCanceledOnTouchOutside(false)
-        dialog.show()
+        dialog.show()*/
     }
 }

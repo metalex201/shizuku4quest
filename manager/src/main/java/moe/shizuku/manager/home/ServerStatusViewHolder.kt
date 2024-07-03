@@ -1,5 +1,6 @@
 package moe.shizuku.manager.home
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,7 @@ class ServerStatusViewHolder(private val binding: HomeServerStatusBinding, root:
     private inline val summaryView get() = binding.text2
     private inline val iconView get() = binding.icon
 
+    @SuppressLint("StringFormatInvalid")
     override fun onBind() {
         val context = itemView.context
         val status = data
@@ -48,7 +50,7 @@ class ServerStatusViewHolder(private val binding: HomeServerStatusBinding, root:
         val title = if (ok) {
             context.getString(R.string.home_status_service_is_running, context.getString(R.string.app_name))
         } else {
-            context.getString(R.string.home_status_service_not_running, context.getString(R.string.app_name))
+                context.getString(R.string.home_status_service_not_running, context.getString(R.string.app_name))
         }
         val summary = if (ok) {
             if (apiVersion != Shizuku.getLatestServiceVersion() || status.patchVersion != ShizukuApiConstants.SERVER_PATCH_VERSION) {

@@ -29,7 +29,6 @@ import moe.shizuku.manager.adb.*
 import moe.shizuku.manager.databinding.AdbPairDialogBinding
 import rikka.lifecycle.viewModels
 import java.net.ConnectException
-import java.net.Inet4Address
 
 @RequiresApi(VERSION_CODES.R)
 class AdbPairDialogFragment : DialogFragment() {

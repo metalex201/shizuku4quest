@@ -2,21 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="ANDROID.PERMISSION.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="ANDROID.PERMISSION.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="moe.shizuku.manager.permission.MANAGER" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission
-        android:name="moe.shizuku.manager.permission.API_V23"
-        tools:node="remove" />
-
-    <uses-feature
-        android:name="android.software.leanback"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="false" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_LOGS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" tools:node="remove" />
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <permission-group
         android:name="moe.shizuku.manager.permission-group.API"
@@ -52,20 +50,55 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="33">
 
+        <meta-data android:name="com.oculus.supportedDevices" android:value="all"/>
+
         <activity
             android:name=".MainActivity"
             android:banner="@mipmap/banner"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:exported="true">
+            android:screenOrientation="unspecified"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:windowSoftInputMode="adjustNothing"
+            android:documentLaunchMode="always"
+            android:resizeableActivity="true"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true">
+
+            <layout android:defaultWidth="442dp" android:defaultHeight="442dp" android:gravity="top|end" />
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+            <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
+            <meta-data android:name="com.oculus.vrshell.supports_multi_cursor" android:value="true" />
+            <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
-                <!-- 2023.08.03: Google play enforces that apps with LEANBACK_LAUNCHER Activity must be uploaded with App Bundle format, -->
-                <!-- and possibly additional review steps. To avoid problems, remove it temporarily. -->
-                <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
             </intent-filter>
         </activity>
+
+        <activity android:name=".LaunchActivity"
+            android:label="LaunchActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:screenOrientation="unspecified"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:windowSoftInputMode="adjustNothing"
+            android:documentLaunchMode="always"
+            android:resizeableActivity="true"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true">
+            <layout android:defaultWidth="170dp" android:defaultHeight="40dp" android:gravity="top|end" />
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+            <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
+            <meta-data android:name="com.oculus.vrshell.supports_multi_cursor" android:value="true" />
+            <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
+        </activity>
+
+
+
+
         <activity
             android:name=".management.ApplicationManagementActivity"
             android:label="@string/home_app_management_title" />
@@ -130,16 +163,21 @@
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
 
-        <receiver
-            android:name=".receiver.BootCompleteReceiver"
-            android:directBootAware="true"
-            android:enabled="true"
+
+        <service
+            android:name=".StartService"  android:enabled="true"
+            android:exported="false">  </service>
+
+        <service
+            android:name=".LaunchService"  android:enabled="true"
+            android:exported="false">  </service>
+
+        <receiver android:enabled="true" android:name=".BootUpReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 

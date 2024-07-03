@@ -92,7 +92,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Preference.OnPreferenceChangeListener { _: Preference?, value: Any? ->
                 if (value is Int) {
                     if (ShizukuSettings.getNightMode() != value) {
-                        AppCompatDelegate.setDefaultNightMode(value)
+                        //AppCompatDelegate.setDefaultNightMode(value)
                         activity?.recreate()
                     }
                 }
