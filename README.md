@@ -1,5 +1,12 @@
-# Shizuku
+# Shizuku4quest
 
+   This app is a modified version of Shizuku, which can be found [here]([https://pages.github.com/](https://github.com/RikkaApps/Shizuku-API/)), this modified version is not affiliated with the original creator of Shizuku. 
+   
+   The modifications are:
+      1.UI redesign to fit the color and look of quest UI
+      2.The pairing process has been modified so that it opens the settings panel correctly.
+      3.The app automatically starts up when the headset is restarted, so that pairing is only required once.
+   
 ## Background
 
 When developing apps that requires root, the most common method is to run some commands in the su shell. For example, there is an app that uses the `pm enable/disable` command to enable/disable components.
